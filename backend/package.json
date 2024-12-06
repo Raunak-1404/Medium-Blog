@@ -5,6 +5,9 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
+    "@jijotiaraunak14/medium-common": "^1.0.0",
+    "@jijotiaraunak14/medium-common2": "^1.0.0",
+    "@jijotiaraunak14/medium-common3": "^1.0.0",
     "@prisma/client": "^6.0.1",
     "@prisma/extension-accelerate": "^1.2.1",
     "hono": "^4.6.12",

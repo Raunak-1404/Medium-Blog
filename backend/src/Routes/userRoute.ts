@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { decode, sign, verify } from 'hono/jwt'
+import {  sign } from 'hono/jwt'
+import { signupSchema, loginSchema } from "@jijotiaraunak14/medium-common3";
 
 const userRoute = new Hono<{
     Bindings: {
@@ -16,14 +17,22 @@ userRoute.post('/signup', async(c) => {
     }).$extends(withAccelerate());
   
     const body = await c.req.json();
+    console.log(body)
+    
     try {
-  
+      const { success } = signupSchema.safeParse(body);
+
+      if(!success){
+        return c.json({
+          status: 403,
+          msg: "Invalid input",
+          error: signupSchema.safeParse(body).error
+        });
+      }
+      
       const existantUser = await prisma.user.findFirst({
         where :{
           email: body.email,
-        },
-        select: {
-          email:true
         }
       });
   
@@ -60,6 +69,15 @@ userRoute.post('/signup', async(c) => {
   
     const body = await c.req.json();
     try {
+      const { success } = loginSchema.safeParse(body);
+
+      if(!success){
+        return c.json({
+          status: 403,
+          msg: "Invalid input",
+          error: loginSchema.safeParse(body).error
+        });
+      }
       
       const user = await prisma.user.findUnique({
         where:{
