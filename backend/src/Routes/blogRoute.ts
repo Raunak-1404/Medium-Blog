@@ -96,7 +96,8 @@ blogRoute.get("/bulk", async (c) => {
         } catch (error) {
              c.status(403);
              return c.json({
-                msg: "Error fetching post"
+                msg: "Error fetching post",
+                error
              });
         }
 });
