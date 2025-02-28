@@ -52,7 +52,6 @@ userRoute.post('/signup', async(c) => {
       });
   
       const token = await sign({userid:user.id}, c.env.JWT_SECRET);
-      localStorage.setItem('token', token);
 
       return c.json({
         status: 200,
@@ -72,6 +71,7 @@ userRoute.post('/signup', async(c) => {
     }).$extends(withAccelerate());
   
     const body = await c.req.json();
+    
     try {
       const { success } = loginSchema.safeParse(body);
       const Ltoken =  c.req.header('Authorization') || " " ;
