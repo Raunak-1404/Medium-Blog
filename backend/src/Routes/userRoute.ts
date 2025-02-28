@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import {  sign } from 'hono/jwt'
+import {  sign, verify } from 'hono/jwt'
 import { signupSchema, loginSchema } from "@jijotiaraunak14/medium-common3";
 
 const userRoute = new Hono<{
@@ -38,7 +38,8 @@ userRoute.post('/signup', async(c) => {
   
       if(existantUser){
         return c.json({
-          msg: "User already exist"
+          msg: "User already exist",
+          status: 403
         });
       }
   
@@ -51,7 +52,10 @@ userRoute.post('/signup', async(c) => {
       });
   
       const token = await sign({userid:user.id}, c.env.JWT_SECRET);
+      localStorage.setItem('token', token);
+
       return c.json({
+        status: 200,
         token,
         user
       });
@@ -70,6 +74,7 @@ userRoute.post('/signup', async(c) => {
     const body = await c.req.json();
     try {
       const { success } = loginSchema.safeParse(body);
+      const Ltoken =  c.req.header('Authorization') || " " ;
 
       if(!success){
         return c.json({
@@ -92,14 +97,23 @@ userRoute.post('/signup', async(c) => {
         });
       }
   
-      const token = await sign({userid:user.id}, c.env.JWT_SECRET);
+      // const token = await sign({userid:user.id}, c.env.JWT_SECRET);\
+      const token = await verify(Ltoken, c.env.JWT_SECRET);
+      if(!token){
+        return c.json({
+          status: 403,
+          msg: "Invalid token"
+        });
+      }
       return c.json({ 
+        status: 200,
         token,
         user
        });
   
     } catch (error) {
       return c.json({
+        status: 403,
         msg: "Error while signin",
         error
       });
