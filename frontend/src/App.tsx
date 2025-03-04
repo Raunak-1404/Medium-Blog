@@ -10,10 +10,10 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          {token ? <Route path="/" element={<Navigate to="/allBlogs" />} /> : <Navigate to="/auth" />}
           <Route path="/auth" element={<Auth />} />
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/allBlogs" element={<AllBlog />} />
+          <Route path="*" element={<Navigate to={token ? "/allBlogs" : "/auth"} />} />
         </Routes>
       </BrowserRouter>
     </>

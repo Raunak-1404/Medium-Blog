@@ -15,7 +15,7 @@ const Signupp = () => {
   const navigate = useNavigate();
   async function sendRequest() {
     const data: SignUPInput = { email, name, password };
-    console.log(data);
+    
     try {
       if (isSignup) {
         const res = await axios.post(
@@ -40,7 +40,7 @@ const Signupp = () => {
             },
           }
         );
-
+        console.log(res)
         if (res.data.status === 200) {
           navigate("/allBlogs");
         } else {
