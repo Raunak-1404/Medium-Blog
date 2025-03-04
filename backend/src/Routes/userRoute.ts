@@ -74,7 +74,8 @@ userRoute.post('/signup', async(c) => {
     
     try {
       const { success } = loginSchema.safeParse(body);
-      const Ltoken =  c.req.header('Authorization') || " " ;
+      // const Ltoken =  c.req.header('Authorization') || " " ;
+      // console.log(Ltoken);
 
       if(!success){
         return c.json({
@@ -97,8 +98,8 @@ userRoute.post('/signup', async(c) => {
         });
       }
   
-      // const token = await sign({userid:user.id}, c.env.JWT_SECRET);\
-      const token = await verify(Ltoken, c.env.JWT_SECRET);
+      const token = await sign({userid:user.id}, c.env.JWT_SECRET);
+      // const token = await verify(Ltoken, c.env.JWT_SECRET);
       if(!token){
         return c.json({
           status: 403,
