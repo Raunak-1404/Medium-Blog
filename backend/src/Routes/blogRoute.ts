@@ -87,8 +87,12 @@ blogRoute.get("/bulk", async (c) => {
         datasourceUrl:c.env.DATABASE_URL,
       }).$extends(withAccelerate());    
         try {
-            const allBlogs = await prisma.blog.findMany();
-    
+            const allBlogs = await prisma.blog.findMany({
+              include:{
+                author: true
+              }
+            });
+            // console.log(allBlogs)
             return c.json({
                 msg: "Post fetched",
                 allBlogs
